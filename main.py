@@ -57,7 +57,8 @@ erlc_group = app_commands.Group(name="erlc", description="ERLC server commands")
 async def erlc_info(interaction: Interaction):
     await interaction.response.defer()
     server_info = get_server_info()
-    embed = create_server_embed(bot.user, server_info, guild_icon_url=interaction.guild.icon.url)
+    guild_icon_url = interaction.guild.icon.url if interaction.guild.icon else None
+    embed = create_server_embed(bot.user, server_info, guild_icon_url=guild_icon_url)
     await interaction.followup.send(embed=embed, view=ServerView(server_info["join_code"]))
 
 tree.add_command(erlc_group)
@@ -66,7 +67,8 @@ tree.add_command(erlc_group)
 async def on_interaction(interaction: Interaction):
     if interaction.type == discord.InteractionType.component and interaction.data.get("custom_id") == "refresh_button":
         server_info = get_server_info()
-        embed = create_server_embed(bot.user, server_info, guild_icon_url=interaction.guild.icon.url)
+        guild_icon_url = interaction.guild.icon.url if interaction.guild.icon else None
+        embed = create_server_embed(bot.user, server_info, guild_icon_url=guild_icon_url)
         await interaction.response.edit_message(embed=embed, view=ServerView(server_info["join_code"]))
 
 @bot.event
